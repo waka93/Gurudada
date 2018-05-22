@@ -1,5 +1,6 @@
+# -- coding: utf-8 --
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, Timeout
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import re
@@ -44,13 +45,18 @@ def get_html(url, count=1):
             proxies = {
                 'http': 'http://' + proxy
             }
-            response = requests.get(url, allow_redirects=False, headers=HEADERS, proxies=proxies)
+            try:
+                response = requests.get(url, allow_redirects=False, headers=HEADERS, proxies=proxies, timeout=TIMEOUT)
+            except Timeout:
+                print('Connection Timeout. Try Another Proxy')
+                proxy = get_proxy()
+                return get_html(url)
         else:
             proxy = get_proxy()
             print('Not Using Proxy. Trying to Get New Proxy.')
             return get_html(url)
         if response.status_code == 200:
-            return response.text
+            return response.content.decode('utf-8')
         else:
             proxy = get_proxy()
             if proxy:
@@ -87,9 +93,9 @@ def parse_index(html):
         info = {
             'type': row.select('a')[0].string.strip(),
             'title': row.select('a')[1].string.strip(),
-            'link': 'https:' + row.select('a')[1]['href'],
+            'link': 'http:' + row.select('a')[1]['href'],
             'writer': row.select('a')[2].string.strip(),
-            'profile_link': 'https:' + row.select('a')[2]['href'],
+            'profile_link': 'http:' + row.select('a')[2]['href'],
             'depature_time': '',
             'return_time': '',
             'destination': '',
@@ -127,4 +133,3 @@ def main(page):
 if __name__ == '__main__':
     pool = Pool()
     pool.map(main, range(1, 101))
-
