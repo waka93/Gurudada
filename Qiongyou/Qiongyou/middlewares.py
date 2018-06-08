@@ -123,7 +123,6 @@ class ProxyMiddleware(object):
 
     def process_response(self, request, response, spider):
         if response.status == 200:
-            requests.get('http://127.0.0.1:5000/add/{}/'.format(self.proxy[7:]))
             return response
         else:
             self.proxy = 'http://' + requests.get('http://127.0.0.1:5000/get').text
