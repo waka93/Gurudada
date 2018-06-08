@@ -55,7 +55,7 @@ class QiongyouSpider(Spider):
             item['writer'] = writer
             item['post_time'] = post_time
             item['profile_link'] = profile_link
-            item['depature_time'] = departure_time
+            item['departure_time'] = departure_time
             item['return_time'] = return_time
             item['destination'] = destination
             item['views'] = views
