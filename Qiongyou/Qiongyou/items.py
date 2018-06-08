@@ -17,7 +17,7 @@ class TopicItem(Item):
     writer = Field()
     post_time = Field()
     profile_link = Field()
-    depature_time = Field()
+    departure_time = Field()
     return_time = Field()
     destination = Field()
     views = Field()
